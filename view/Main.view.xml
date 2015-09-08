@@ -1,0 +1,86 @@
+<core:View
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	controllerName="sap.training.exc12.formatter_filter_sorter.view.Main"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	
+	<f:SimpleForm>
+		<Label text="Filter auf Fluggesellschaft"/>
+		<ComboBox selectionChange="onFilterSelectionChange">
+			<items>
+				<core:ListItem text="" key=""/>
+				<core:ListItem text="Alitalia" key="AZ"/>
+				<core:ListItem text="Japan Airlines" key="JL"/>
+				<core:ListItem text="Lufthansa" key="LH"/>
+			</items>
+		</ComboBox>
+		<Label text="Aufsteigend sortieren nach"/>
+		<ComboBox selectionChange="onSortSelectionChange">
+			<items>
+				<core:ListItem text="" key=""/>
+				<core:ListItem text="Fluggesellschaft" key="carrId"/>
+				<core:ListItem text="Flugverbindung" key="connId"/>
+				<core:ListItem text="Flugdatum" key="fldate"/>
+				<core:ListItem text="Preis" key="price"/>
+			</items>
+		</ComboBox>
+	</f:SimpleForm>
+	
+	<Table id="idFlightsTable" headerText="Flüge" items="{
+	                										path: '/data',
+	                										sorter:[ {path: 'carrId', descending: false} ]
+	                									}">
+		<columns>
+			<Column>
+				<Text text="Fluggesellschaft" />
+			</Column>
+			<Column>
+				<Text text="Flugverbindung"/>
+			</Column>
+			<Column>
+				<Text text="Flugdatum"/>
+			</Column>
+			<Column>
+				<Text text="Preis"/>
+			</Column>
+			<Column>
+				<Text text="Verfügbarkeit"/>
+			</Column>
+			<Column>
+				<Text text="Freie Sitze"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Text  text="{
+								path: 'carrId',
+								formatter: '.carrName'
+							}" />                       
+					<Text text="{connId}"/>
+					<Text text="{
+								path: 'fldate',
+                            	type: 'sap.ui.model.type.Date',
+                            	formatOptions: { source: {pattern: 'yyyy/MM/dd'} }
+                            }"/>
+					<Text text="
+							{ path: 'price', 
+                			  type: 'sap.ui.model.type.Float',
+                			  formatOptions: {minFractionDigits: 2, maxFractionDigits: 2}
+                			 }
+               
+                			{ path: 'currency' }
+                			   "/>
+                	<core:Icon src="{= ${seatsMax} - ${seatsOcc} >= 30 ? 'sap-icon://message-success' : 'sap-icon://message-warning' }" />
+                	<Text text="{ parts:[ {path:'seatsMax'},
+                                          {path:'seatsOcc'}
+                            			],
+                    			  formatter: 'sap.training.exc12.formatter_filter_sorter.util.Formatter.freeSeats'
+                    			}"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</core:View>
